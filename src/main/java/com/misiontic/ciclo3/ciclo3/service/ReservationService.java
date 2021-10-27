@@ -6,7 +6,13 @@
 package com.misiontic.ciclo3.ciclo3.service;
 
 import com.misiontic.ciclo3.ciclo3.model.Reservations;
+import com.misiontic.ciclo3.ciclo3.model.custome.CountClient;
+import com.misiontic.ciclo3.ciclo3.model.custome.StatusAmount;
 import com.misiontic.ciclo3.ciclo3.repository.ReservationRepository;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,6 +117,37 @@ public class ReservationService {
             return true;
         }).orElse( aBoolean = false);
         return aBoolean;
+    }
+    
+    //RETO 5
+    public List<CountClient> getTopClient(){
+        return reservationRepository.getTopClient();
+    }
+
+    public StatusAmount getStatusReport(){
+        List<Reservations> completed=reservationRepository.getReservationByStatus("completed");
+        List<Reservations> cancelled=reservationRepository.getReservationByStatus("cancelled");
+
+        StatusAmount descAmt=new StatusAmount(completed.size(),cancelled.size());
+        return descAmt;
+    }
+    public List<Reservations> getReservationPeriod(String d1, String d2){
+
+        // yyyy-MM-dd
+        SimpleDateFormat parser=new SimpleDateFormat("yyyy-MM-dd");
+        Date dateOne=new Date();
+        Date dateTwo=new Date();
+        try {
+            dateOne=parser.parse(d1);
+            dateTwo=parser.parse(d2);
+        }catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(dateOne.before(dateTwo)){
+            return reservationRepository.getReservationPeriod(dateOne,dateTwo);
+        }else{
+            return new ArrayList<>();
+        }
     }
     
 }

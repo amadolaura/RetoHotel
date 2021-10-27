@@ -6,6 +6,8 @@
 package com.misiontic.ciclo3.ciclo3.web;
 
 import com.misiontic.ciclo3.ciclo3.model.Reservations;
+import com.misiontic.ciclo3.ciclo3.model.custome.CountClient;
+import com.misiontic.ciclo3.ciclo3.model.custome.StatusAmount;
 import com.misiontic.ciclo3.ciclo3.service.ReservationService;
 import java.util.List;
 import java.util.Optional;
@@ -57,11 +59,28 @@ public class ReservationController {
         return reservationService.update(reserv);
     }
 
-
+    
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public boolean delete(@PathVariable("id") int id) {
         return reservationService.deleteReservation(id);
+    }
+    
+    //RETO 5
+
+    @GetMapping("/report-status")
+    public StatusAmount getReservationDescriptionStatus(){
+        return reservationService.getStatusReport();
+    }
+    
+    @GetMapping("/report-clients")
+    public List<CountClient> getCountClient(){
+        return reservationService.getTopClient();
+    }
+
+    @GetMapping("/report-dates/{dateOne}/{dateTwo}")
+    public List<Reservations> getDatesReport(@PathVariable("dateOne")String d1, @PathVariable("dateTwo")String d2){
+       return reservationService.getReservationPeriod(d1,d2);
     }
     
 }
